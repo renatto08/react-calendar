@@ -24,28 +24,37 @@ function App() {
     if (!task) return;
     setTasks({
       ...tasks,
-      [key]: { [Date.now()]: task }
+      [key]: { ...tasks[key], [Date.now()]: task }
 
     }
     );
   }
+  const removeTask = (keyDay, keyActivity) => {
+    const tasksOfTheDay = { ...tasks[keyDay] };
+    delete tasksOfTheDay[keyActivity];
+    setTasks({
+      ...tasks,
+      [keyDay]: { ...tasksOfTheDay }
+    })
+  }
+
 
   return (
     <div className="App">
       <div>
-        <button onClick={() => manageMonthChange(-1)}> {'<'} </button>
-        {currentDate.toLocaleDateString('es-PE', options)}
-        <button onClick={() => manageMonthChange(1)}>{'>'}</button>
-        {/* <Calendar currentDate={cD} /> */}
-
+        <h3>
+          <button onClick={() => manageMonthChange(-1)}> {'<'} </button>
+          {currentDate.toLocaleDateString('es-PE', options)}
+          <button onClick={() => manageMonthChange(1)}>{'>'}</button>
+        </h3>
         <div className='calendar'>
-          <div>Sunday</div>
-          <div>Monday</div>
-          <div>Tuesday</div>
-          <div>Wendesday</div>
-          <div>Turday</div>
-          <div>Friday</div>
-          <div>Saturday</div>
+          <div className='calendarheader'>Sunday</div>
+          <div className='calendarheader'>Monday</div>
+          <div className='calendarheader'>Tuesday</div>
+          <div className='calendarheader'>Wendesday</div>
+          <div className='calendarheader'>Turday</div>
+          <div className='calendarheader'>Friday</div>
+          <div className='calendarheader'>Saturday</div>
           {
 
             Array.from({ length: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay() }, (_, i) => (
@@ -54,14 +63,19 @@ function App() {
           }
           {
             Array.from({ length: new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate() }, (_, index) => {
-              const key = `${currentDate.getFullYear()}-${currentDate.getMonth()}-${index + 1}`;
+              const key = `${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${index + 1}`;
               // console.log(key)
-              // console.log(tasks[key])
-              return (<div key={index} className='calendarItem' onClick={() => addTask(key)} > {index + 1}
+              return (
+                <div key={index} className='calendarItem' onClick={() => addTask(key)} > {index + 1}
+                  {
+                    tasks[key] ?
+                      Object.entries(tasks[key]).map((val) => <p key={val[0]} onClick={(e) => {
+                        e.stopPropagation()
+                        removeTask(key, val[0])
+                      }}>{val[1]}</p>) : ""
+                  }
 
-                {Array.from(tasks).length > 0 ? Array.from(tasks[key]).map((value) => console.log(value)) : "hola"
-                }
-              </div>)
+                </div>)
 
             }
 
