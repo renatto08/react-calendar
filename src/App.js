@@ -31,10 +31,16 @@ function App() {
   }
   const removeTask = (keyDay, keyActivity) => {
     const tasksOfTheDay = { ...tasks[keyDay] };
-    delete tasksOfTheDay[keyActivity];
+    // delete tasksOfTheDay[keyActivity];
+    // setTasks({
+    //   ...tasks,
+    //   [keyDay]: { ...tasksOfTheDay }
+    // })
+    const { [keyActivity]: removedProperty, ...otherActivities } = tasksOfTheDay
+    console.log(removedProperty, otherActivities)
     setTasks({
       ...tasks,
-      [keyDay]: { ...tasksOfTheDay }
+      [keyDay]: { ...otherActivities }
     })
   }
 
